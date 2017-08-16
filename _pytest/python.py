@@ -1132,6 +1132,10 @@ class Function(FunctionMixin, main.Item, fixtures.FuncargnamesCompatAttr):
         #: .. versionadded:: 3.0
         self.originalname = originalname
 
+        #: user properties is a list of tuples (name, value) that holds user
+        #: defined properties for this test.
+        self.user_properties = []
+
     def _initrequest(self):
         self.funcargs = {}
         if self._isyieldedfunction():

@@ -313,6 +313,7 @@ def pytest_runtest_makereport(item, call):
         sections.append(("Captured %s %s" % (key, rwhen), content))
     return TestReport(item.nodeid, item.location,
                       keywords, outcome, longrepr, when,
+                      item.user_properties,
                       sections, duration)
 
 
@@ -322,7 +323,8 @@ class TestReport(BaseReport):
     """
 
     def __init__(self, nodeid, location, keywords, outcome,
-                 longrepr, when, sections=(), duration=0, **extra):
+                 longrepr, when, user_properties,
+                 sections=(), duration=0, **extra):
         #: normalized collection node id
         self.nodeid = nodeid
 
@@ -343,6 +345,10 @@ class TestReport(BaseReport):
 
         #: one of 'setup', 'call', 'teardown' to indicate runtest phase.
         self.when = when
+
+        #: user properties is a list of tuples (name, value) that holds user
+        #: defined properties of the test
+        self.user_properties = user_properties
 
         #: list of pairs ``(str, str)`` of extra information which needs to
         #: marshallable. Used by pytest to add captured text

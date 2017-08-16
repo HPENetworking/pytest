@@ -190,24 +190,10 @@ class _NodeReporter(object):
 
 
 @pytest.fixture
-def record_xml_property(request):
-    """Add extra xml properties to the tag for the calling test.
-    The fixture is callable with ``(name, value)``, with value being automatically
-    xml-encoded.
-    """
-    request.node.warn(
-        code='C3',
-        message='record_xml_property is an experimental feature',
-    )
-    xml = getattr(request.config, "_xml", None)
-    if xml is not None:
-        node_reporter = xml.node_reporter(request.node.nodeid)
-        return node_reporter.add_property
-    else:
-        def add_property_noop(name, value):
-            pass
-
-        return add_property_noop
+def record_property(request):
+    def append_property(name, value):
+        request.node.user_properties.append((name, value))
+    return append_property
 
 
 def pytest_addoption(parser):
@@ -372,6 +358,10 @@ class LogXML(object):
         if report.when == "teardown":
             reporter = self._opentestcase(report)
             reporter.write_captured_output(report)
+
+            for propname, propvalue in report.user_properties:
+                reporter.add_property(propname, propvalue)
+
             self.finalize(report)
             report_wid = getattr(report, "worker_id", None)
             report_ii = getattr(report, "item_index", None)
