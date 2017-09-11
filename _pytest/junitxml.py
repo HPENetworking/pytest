@@ -191,6 +191,11 @@ class _NodeReporter(object):
 
 @pytest.fixture
 def record_property(request):
+    """Add an extra properties the calling test.
+    User properties become part of the test report and are available to the
+    configured reporters, like JUnit XML.
+    The fixture is callable with ``(name, value)``.
+    """
     def append_property(name, value):
         request.node.user_properties.append((name, value))
     return append_property
